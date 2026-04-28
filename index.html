@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WTPOF Staff Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green:   #3A9E2F;
+      --green-dark: #2a7522;
+      --green-light: #eaf7e8;
+      --purple:  #8B1A6B;
+      --purple-light: #f9eef6;
+      --sky:     #87CEEB;
+      --brown:   #6B3A2A;
+      --brown-light: #f5ede9;
+      --cream:   #fdf9f4;
+      --text:    #1a1a1a;
+      --muted:   #6b6b6b;
+      --border:  #e0dbd5;
+      --white:   #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--green);
+      color: var(--white);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(58,158,47,0.25);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-circle {
+      width: 48px; height: 48px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-circle svg { width: 30px; height: 30px; }
+
+    .brand-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--white);
+    }
+
+    .brand-text p {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.8);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+    }
+
+    .header-date {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.75);
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* ── WELCOME BAND ── */
+    .welcome-band {
+      background: var(--purple);
+      color: var(--white);
+      text-align: center;
+      padding: 14px 28px;
+      font-size: 0.9rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .welcome-band strong { font-weight: 600; }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--green-dark);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid var(--green);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label .icon { font-size: 1.3rem; }
+
+    /* ── GRID ── */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      padding: 16px 20px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .card-body { padding: 0 20px 18px; }
+
+    /* ── LINK ITEMS ── */
+    .link-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+
+    .link-list li a, .link-list li .placeholder-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.15s ease;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+    }
+
+    .link-list li a:hover, .link-list li .placeholder-link:hover {
+      background: var(--green-light);
+      color: var(--green-dark);
+    }
+
+    .link-list li a { color: var(--text); }
+    .link-list li .placeholder-link { color: var(--muted); font-style: italic; }
+
+    .link-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .link-arrow {
+      margin-left: auto;
+      font-size: 0.8rem;
+      opacity: 0.4;
+    }
+
+    /* ── CARD COLOR THEMES ── */
+    .theme-green .card-header { background: var(--green-light); border-bottom: 1px solid #c8eeC4; }
+    .theme-green .card-icon { background: var(--green); color: white; }
+    .theme-green .card-title { color: var(--green-dark); }
+    .theme-green .link-dot { background: var(--green); }
+
+    .theme-purple .card-header { background: var(--purple-light); border-bottom: 1px solid #e8c8e0; }
+    .theme-purple .card-icon { background: var(--purple); color: white; }
+    .theme-purple .card-title { color: var(--purple); }
+    .theme-purple .link-dot { background: var(--purple); }
+    .theme-purple .link-list li a:hover, .theme-purple .link-list li .placeholder-link:hover { background: var(--purple-light); color: var(--purple); }
+
+    .theme-brown .card-header { background: var(--brown-light); border-bottom: 1px solid #e0cac3; }
+    .theme-brown .card-icon { background: var(--brown); color: white; }
+    .theme-brown .card-title { color: var(--brown); }
+    .theme-brown .link-dot { background: var(--brown); }
+    .theme-brown .link-list li a:hover, .theme-brown .link-list li .placeholder-link:hover { background: var(--brown-light); color: var(--brown); }
+
+    .theme-sky .card-header { background: #eaf5fc; border-bottom: 1px solid #c5e5f5; }
+    .theme-sky .card-icon { background: #3a9bcf; color: white; }
+    .theme-sky .card-title { color: #1a6a9a; }
+    .theme-sky .link-dot { background: #3a9bcf; }
+    .theme-sky .link-list li a:hover, .theme-sky .link-list li .placeholder-link:hover { background: #eaf5fc; color: #1a6a9a; }
+
+    /* ── CONTACTS CARD ── */
+    .contact-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--cream);
+    }
+
+    .contact-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      color: white;
+    }
+
+    .contact-info strong { font-size: 0.88rem; font-weight: 600; display: block; }
+    .contact-info span { font-size: 0.78rem; color: var(--muted); }
+
+    .contact-actions { margin-left: auto; display: flex; gap: 6px; }
+
+    .contact-btn {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      border: 1.5px solid var(--border);
+      background: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .contact-btn:hover { border-color: var(--green); background: var(--green-light); }
+
+    /* ── CALENDAR CARD ── */
+    .calendar-mini { padding: 4px 0; }
+
+    .cal-month {
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      text-align: center;
+    }
+
+    .cal-day-header {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 3px 0;
+    }
+
+    .cal-day {
+      font-size: 0.8rem;
+      padding: 5px 0;
+      border-radius: 6px;
+      cursor: default;
+      line-height: 1;
+    }
+
+    .cal-day.empty { background: none; }
+    .cal-day.today { background: var(--green); color: white; font-weight: 700; }
+    .cal-day.has-event { background: var(--purple-light); color: var(--purple); font-weight: 600; }
+    .cal-day:not(.empty):not(.today):not(.has-event):hover { background: var(--green-light); }
+
+    .event-list { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+
+    .event-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--cream);
+      border-left: 3px solid var(--green);
+    }
+
+    .event-date { font-size: 0.72rem; font-weight: 700; color: var(--green-dark); min-width: 36px; }
+    .event-name { font-size: 0.82rem; font-weight: 500; }
+
+    /* ── GRANT TRACKER ── */
+    .grant-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--cream);
+      margin-bottom: 8px;
+    }
+
+    .grant-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .grant-name { font-size: 0.85rem; font-weight: 600; }
+    .grant-amount { font-size: 0.82rem; font-weight: 700; color: var(--green-dark); }
+
+    .grant-bar-wrap {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .grant-bar {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--green);
+      transition: width 0.6s ease;
+    }
+
+    .grant-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .grant-status {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    .status-active { background: #d4f5cf; color: #2a7522; }
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-submitted { background: #cce5ff; color: #004085; }
+    .grant-deadline { font-size: 0.7rem; color: var(--muted); }
+
+    /* ── ADD BUTTON ── */
+    .add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 9px;
+      border-radius: 8px;
+      border: 1.5px dashed var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+
+    .add-btn:hover { border-color: var(--green); color: var(--green-dark); background: var(--green-light); }
+
+    /* ── NOTICE BANNER ── */
+    .notice {
+      background: #fff8e1;
+      border: 1.5px solid #ffe082;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      color: #5c4000;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--brown);
+      color: rgba(255,255,255,0.75);
+      text-align: center;
+      padding: 20px 28px;
+      font-size: 0.78rem;
+      line-height: 1.7;
+    }
+
+    footer strong { color: white; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .header-date { display: none; }
+      main { padding: 20px 14px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="logo-circle">
+        <!-- Simple leaf/plant icon in WTPOF green -->
+        <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 26 C15 26 15 14 15 14 C15 14 8 8 5 4 C5 4 20 5 24 14 C28 23 15 26 15 26Z" fill="#3A9E2F"/>
+          <path d="M15 26 C15 26 15 14 15 14 C15 14 22 8 25 4 C25 4 10 6 7 15" fill="#8B1A6B" opacity="0.6"/>
+          <line x1="15" y1="14" x2="15" y2="27" stroke="#6B3A2A" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>We The People Opportunity Farm</h1>
+        <p>Staff Operations Dashboard</p>
+      </div>
+    </div>
+    <div class="header-date" id="live-date">Loading...</div>
+  </div>
+</header>
+
+<!-- WELCOME BAND -->
+<div class="welcome-band">
+  👋 Welcome, <strong>LaWanda</strong> — everything you need is right here. Click any item below to open it.
+</div>
+
+<main>
+
+  <!-- NOTICE -->
+  <div class="notice">
+    📌 <span><strong>Getting started:</strong> Links marked <em>"Add link…"</em> are placeholders. Ask Josie to update them with the real document or web address. Once updated, just click to open anything instantly.</span>
+  </div>
+
+  <div class="dashboard-grid">
+
+    <!-- ① KEY DOCUMENTS -->
+    <div class="card theme-green">
+      <div class="card-header">
+        <div class="card-icon">📁</div>
+        <div>
+          <div class="card-title">Key Documents</div>
+          <div class="card-subtitle">Important files — always start here</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="link-list">
+          <li><a href="#"><span class="link-dot"></span>WTPOF Mission &amp; Vision<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Org Chart<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>2026 Annual Plan<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Board Meeting Minutes<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Good Soil Café Consulting Agreement<span class="link-arrow">↗</span></a></li>
+          <li><span class="placeholder-link">+ Add document link…</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ② QUICK LINKS -->
+    <div class="card theme-sky">
+      <div class="card-header">
+        <div class="card-icon">🔗</div>
+        <div>
+          <div class="card-title">Quick Links</div>
+          <div class="card-subtitle">Tools &amp; platforms used daily</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="link-list">
+          <li><a href="https://drive.google.com" target="_blank"><span class="link-dot"></span>Google Drive (WTPOF Files)<span class="link-arrow">↗</span></a></li>
+          <li><a href="https://mail.google.com" target="_blank"><span class="link-dot"></span>Gmail<span class="link-arrow">↗</span></a></li>
+          <li><a href="https://calendar.google.com" target="_blank"><span class="link-dot"></span>Google Calendar<span class="link-arrow">↗</span></a></li>
+          <li><a href="https://wtpof.org" target="_blank"><span class="link-dot"></span>WTPOF Website<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Payroll / Scheduling System<span class="link-arrow">↗</span></a></li>
+          <li><span class="placeholder-link">+ Add quick link…</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ③ STAFF CONTACTS -->
+    <div class="card theme-purple">
+      <div class="card-header">
+        <div class="card-icon">👥</div>
+        <div>
+          <div class="card-title">Staff Contacts</div>
+          <div class="card-subtitle">Click 📧 to email, 📞 to call</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="contact-list">
+          <li class="contact-item">
+            <div class="contact-avatar" style="background:#8B1A6B;">LH</div>
+            <div class="contact-info">
+              <strong>LaWanda Hollister</strong>
+              <span>Executive Director</span>
+            </div>
+            <div class="contact-actions">
+              <a href="mailto:lawanda@wtpof.org" class="contact-btn" title="Email">📧</a>
+              <a href="tel:+1" class="contact-btn" title="Call">📞</a>
+            </div>
+          </li>
+          <li class="contact-item">
+            <div class="contact-avatar" style="background:#3A9E2F;">JL</div>
+            <div class="contact-info">
+              <strong>Josie Ann Lee</strong>
+              <span>Consultant / Advisor</span>
+            </div>
+            <div class="contact-actions">
+              <a href="mailto:josie@wtpof.org" class="contact-btn" title="Email">📧</a>
+              <a href="tel:+1" class="contact-btn" title="Call">📞</a>
+            </div>
+          </li>
+          <li class="contact-item">
+            <div class="contact-avatar" style="background:#6B3A2A;">SC</div>
+            <div class="contact-info">
+              <strong>Staff Contact</strong>
+              <span>Add role here</span>
+            </div>
+            <div class="contact-actions">
+              <a href="mailto:#" class="contact-btn" title="Email">📧</a>
+              <a href="tel:+1" class="contact-btn" title="Call">📞</a>
+            </div>
+          </li>
+        </ul>
+        <button class="add-btn">＋ Add staff member</button>
+      </div>
+    </div>
+
+    <!-- ④ CALENDAR / EVENTS -->
+    <div class="card theme-green">
+      <div class="card-header">
+        <div class="card-icon">📅</div>
+        <div>
+          <div class="card-title">Calendar &amp; Events</div>
+          <div class="card-subtitle">Upcoming dates to know</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="calendar-mini">
+          <div class="cal-month" id="cal-month-label"></div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <div class="event-list">
+          <div class="event-item">
+            <div class="event-date">MAY 1</div>
+            <div class="event-name">Good Soil Café — Quarterly Check-in</div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">MAY 15</div>
+            <div class="event-name">Board Meeting</div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">JUN 1</div>
+            <div class="event-name">Grant Report Due — MJF</div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">JUN 30</div>
+            <div class="event-name">Q2 Review with Josie</div>
+          </div>
+        </div>
+        <button class="add-btn">＋ Add event</button>
+      </div>
+    </div>
+
+    <!-- ⑤ POLICIES & PROCEDURES -->
+    <div class="card theme-brown">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <div>
+          <div class="card-title">Policies &amp; Procedures</div>
+          <div class="card-subtitle">The rules that guide how we work</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="link-list">
+          <li><a href="#"><span class="link-dot"></span>Employee Handbook<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Code of Conduct<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Trauma-Aware Workplace Policy<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Hiring &amp; Onboarding Process<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Incident &amp; Grievance Procedure<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Reentry Participant Guidelines<span class="link-arrow">↗</span></a></li>
+          <li><span class="placeholder-link">+ Add policy document…</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ⑥ GRANT TRACKING -->
+    <div class="card theme-purple">
+      <div class="card-header">
+        <div class="card-icon">💰</div>
+        <div>
+          <div class="card-title">Grant Tracking</div>
+          <div class="card-subtitle">Funding status at a glance</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="grant-item">
+          <div class="grant-row">
+            <span class="grant-name">Michigan Justice Fund</span>
+            <span class="grant-amount">$250,000</span>
+          </div>
+          <div class="grant-bar-wrap"><div class="grant-bar" style="width:40%"></div></div>
+          <div class="grant-meta">
+            <span class="grant-status status-submitted">Submitted</span>
+            <span class="grant-deadline">Decision: TBD</span>
+          </div>
+        </div>
+
+        <div class="grant-item">
+          <div class="grant-row">
+            <span class="grant-name">Jenkins Foundation</span>
+            <span class="grant-amount">Active</span>
+          </div>
+          <div class="grant-bar-wrap"><div class="grant-bar" style="width:75%"></div></div>
+          <div class="grant-meta">
+            <span class="grant-status status-active">Active</span>
+            <span class="grant-deadline">Report: Jun 30</span>
+          </div>
+        </div>
+
+        <div class="grant-item">
+          <div class="grant-row">
+            <span class="grant-name">Flagstar Grant</span>
+            <span class="grant-amount">Active</span>
+          </div>
+          <div class="grant-bar-wrap"><div class="grant-bar" style="width:60%"></div></div>
+          <div class="grant-meta">
+            <span class="grant-status status-active">Active</span>
+            <span class="grant-deadline">Report: Jul 15</span>
+          </div>
+        </div>
+
+        <div class="grant-item">
+          <div class="grant-row">
+            <span class="grant-name">DTE Grant</span>
+            <span class="grant-amount">Active</span>
+          </div>
+          <div class="grant-bar-wrap"><div class="grant-bar" style="width:50%"></div></div>
+          <div class="grant-meta">
+            <span class="grant-status status-active">Active</span>
+            <span class="grant-deadline">Report: Aug 1</span>
+          </div>
+        </div>
+
+        <div class="grant-item">
+          <div class="grant-row">
+            <span class="grant-name">New Grant</span>
+            <span class="grant-amount">—</span>
+          </div>
+          <div class="grant-bar-wrap"><div class="grant-bar" style="width:10%"></div></div>
+          <div class="grant-meta">
+            <span class="grant-status status-pending">In Progress</span>
+            <span class="grant-deadline">Deadline: TBD</span>
+          </div>
+        </div>
+
+        <button class="add-btn">＋ Add grant</button>
+      </div>
+    </div>
+
+    <!-- ⑦ TRAINING RESOURCES -->
+    <div class="card theme-sky">
+      <div class="card-header">
+        <div class="card-icon">🌱</div>
+        <div>
+          <div class="card-title">Training Resources</div>
+          <div class="card-subtitle">Learning materials for staff</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="link-list">
+          <li><a href="#"><span class="link-dot"></span>SuperPower of Service — Staff Guide<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>ZingTrain Workshop Materials<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Michigan Works — Partner Resources<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>Trauma-Aware Practices Overview<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>ServSafe / Food Safety Training<span class="link-arrow">↗</span></a></li>
+          <li><a href="#"><span class="link-dot"></span>MoonWinks Training Modules<span class="link-arrow">↗</span></a></li>
+          <li><span class="placeholder-link">+ Add training resource…</span></li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- end grid -->
+</main>
+
+<footer>
+  <strong>We The People Opportunity Farm</strong> · 979 Ecorse Road, Ypsilanti, MI<br>
+  Questions? Contact Josie Ann Lee · This dashboard is for internal staff use only.
+</footer>
+
+<script>
+  // Live date in header
+  const dateEl = document.getElementById('live-date');
+  const now = new Date();
+  dateEl.innerHTML = now.toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'}) +
+    '<br>' + now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+
+  // Mini calendar
+  const monthLabel = document.getElementById('cal-month-label');
+  const calGrid = document.getElementById('cal-grid');
+  const days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const today = new Date();
+  const year = today.getFullYear(), month = today.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  monthLabel.textContent = today.toLocaleDateString('en-US', {month:'long', year:'numeric'});
+
+  days.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-header';
+    el.textContent = d;
+    calGrid.appendChild(el);
+  });
+
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day empty';
+    calGrid.appendChild(el);
+  }
+
+  // Sample event days (update these as needed)
+  const eventDays = [1, 15];
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    el.textContent = d;
+    if (d === today.getDate()) el.classList.add('today');
+    else if (eventDays.includes(d)) el.classList.add('has-event');
+    calGrid.appendChild(el);
+  }
+</script>
+
+</body>
+</html>
